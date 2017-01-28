@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html>
+
+<body>
+
+
+
+
+<div class="meeting-container" style="display:none;">
+
+
+
+      <h2>Create classroom</h2>
+
+
+
+
+   <div id="Instant" class="tabcontent">
+
+      <p ></p>
+
+       <p id="widgetFailureMessage"></p>
+
+      <form onsubmit="return createScheduledMeeting();" id="meetform3">
+
+         <input type="text" name="rest" value="https://sandbox.liveh2h.com/tutormeetweb/rest/v1/meetings/createInstantMeeting"
+
+            id="restfield" size="70" maxlength="100" id="restfield"><br>
+        <input type="text" name="length" placeholder="Class Title" id="" size="30" maxlength="40"><br>
+
+        <input type="text" name="length" placeholder="Class Description" id="" size="30" maxlength="40"><br>
+
+
+         <input type="text" name="length" placeholder="Class duration" id="lengthfield" size="30" maxlength="40"><br>
+
+
+
+         <input type="text" name="subject" placeholder="Subject" id="subjectfield" size="30" maxlength="50"><br>
+         <div class="form-check">
+           <label class="form-check-label">
+             <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+             Private
+           </label>
+         </div>
+         <div class="form-check">
+           <label class="form-check-label">
+             <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
+             Public
+           </label>
+         </div>
+             <input type="text" name="length" placeholder="Password Required if Private" id="" size="30" maxlength="40"><br>
+
+          <h3>Record Video</h3>
+          <div class="form-check">
+            <label class="form-check-label">
+              <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+              Yes
+            </label>
+          </div>
+          <div class="form-check">
+            <label class="form-check-label">
+              <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
+              No
+            </label>
+          </div>
+
+      </form>
+
+      <br>
+
+      <button type="submit" form="meetform3" value="Submit">Create classroom</button>
+
+
+
+
+   </div>
+
+
+
+</div>
+
+
+     <div id="divMeetingList" style="display:none;">
+
+       <a id="aMeetingURL">Join Meeting</a>
+
+    </div>
+
+
+
+<script type="text/javascript" src="http://developer.liveh2h.com/wp-content/themes/Karma/meeting.jquery.min_.js"></script>
+
+<script type="text/javascript" src="http://developer.liveh2h.com/wp-content/themes/Karma/meeting-plugin.js"></script>
+
+<script>
+function createScheduledMeeting() {
+    //rest = document.getElementById("meetform3").elements["restfield"].value;
+    length = document.getElementById("meetform3").elements["lengthfield"].value;
+    subject = document.getElementById("meetform3").elements["subjectfield"].value;
+    meetingType = 2
+    applicationId = "51844F18-4D07-4BA0-AE74-5F4FEBFAAC85";
+    startTime = 1485655200000;
+
+    var obj = {"applicationId":applicationId,
+               "emailList":["ss42@stmarys-ca.edu"],
+               "length":length,
+               "meetingType":meetingType,
+               "startTime":startTime,
+               "subject":subject
+              };
+    var objstr = JSON.stringify(obj);
+    var meetingurl = "";
+    var meetingID;
+    jQuery.ajax( {
+        url: 'https://sandbox.liveh2h.com/tutormeetweb/rest/v1/meetings/schedule',
+        type: 'POST',
+        headers:
+		{
+          "apiToken": "dlwy59R9s0nRB4w8608u4D6PZF9v"
+        },
+        data: objstr,
+        beforeSend : function( xhr ) {
+            xhr.setRequestHeader("Content-Type", "application/json");
+        },
+        success: function( response ) {
+	     console.log(response);
+            meetingID = response.data.meetingId;
+            //Call Join API with this meeting Id and API token to get the meeting URL
+            //window.open(response.data.meetingId,"_self");
+            GetMeetingURL(meetingID);
+        },
+        error: function( response ) {
+	     console.log("Error in API" + response);
+             if(document.getElementById( 'widgetFailureMessageEng' )){
+             		document.getElementById( 'widgetFailureMessageEng' ).innerHTML ="You are missing a required field";
+                }
+            }
+        } );
+
+        return false;
+    }
+
+
+    function GetMeetingURL(meetId){
+        rest = document.getElementById("meetform3").elements["restfield"].value
+        name = "test"
+        email = "shizzrig@gmail.com"
+        meetingId = meetId
+
+        var obj = {"email":email, "meetingId":meetingId, "name":name};
+        var objstr = JSON.stringify(obj);
+        var meetingurl = "";
+        jQuery.ajax( {
+            url: rest, //'https://sandbox.liveh2h.com/tutormeetweb/rest/v1/meetings/schedule',
+            type: 'POST',
+            headers: {
+                "apiToken": "dlwy59R9s0nRB4w8608u4D6PZF9v"
+            },
+            data: objstr,
+            beforeSend : function( xhr ) {
+                xhr.setRequestHeader("Content-Type", "application/json");
+            },
+            success: function( response ) {
+                meetingurl = response.data.meetingURL;
+                $('#divSchedule').css("visibility", "hidden");
+
+                $('#aMeetingURL').attr("href", meetingurl);
+                 $('#divMeetingList').show();
+                //window.open(response.data.meetingURL, '_self');
+            },
+            error: function( response ) {
+                alert("Failure: Required field missing");
+                if(document.getElementById( 'widgetFailureMessageEng' )){
+                    document.getElementById( 'widgetFailureMessageEng' ).innerHTML ="You are missing a required field";
+                }
+
+            }
+        } );
+
+    return false;
+    }
+
+</script>
+
+
+</body>
+
+</html>
