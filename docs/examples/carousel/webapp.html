@@ -24,7 +24,7 @@
 
       <form onsubmit="return createScheduledMeeting();" id="meetform3">
 
-         <input type="text" name="rest" value="https://sandbox.liveh2h.com/tutormeetweb/rest/v1/meetings/createInstantMeeting"
+         <input type="text" name="rest" value="https://sandbox.liveh2h.com/tutormeetweb/rest/v1/meetings/join"
 
             id="restfield" size="70" maxlength="100" id="restfield"><br>
         <input type="text" name="length" placeholder="Class Title" id="" size="30" maxlength="40"><br>
@@ -98,9 +98,9 @@ function createScheduledMeeting() {
     //rest = document.getElementById("meetform3").elements["restfield"].value;
     length = document.getElementById("meetform3").elements["lengthfield"].value;
     subject = document.getElementById("meetform3").elements["subjectfield"].value;
-    meetingType = 2
+    meetingType = 8
     applicationId = "51844F18-4D07-4BA0-AE74-5F4FEBFAAC85";
-    startTime = 1485655200000;
+    startTime = 1485645600000;
 
     var obj = {"applicationId":applicationId,
                "emailList":["ss42@stmarys-ca.edu"],
